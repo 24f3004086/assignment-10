@@ -15,11 +15,10 @@ EMAIL = "24f3004086@ds.study.iitm.ac.in"
 # -----------------------------
 # Allowed Origins
 # -----------------------------
+from fastapi.middleware.cors import CORSMiddleware
+
 origins = [
     "https://app-vzn1lg.example.com",
-
-    # IMPORTANT
-    # Replace this with the exam page origin if instructed
 ]
 
 app.add_middleware(
