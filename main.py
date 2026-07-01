@@ -19,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
     "https://app-vzn1lg.example.com",
+    "https://exam.sanand.workers.dev"
 ]
 
 app.add_middleware(
@@ -64,9 +65,11 @@ async def request_context(request: Request, call_next):
 # -----------------------------
 @app.middleware("http")
 async def rate_limiter(request: Request, call_next):
+    # Don't rate limit CORS preflight requests
+    if request.method == "OPTIONS":
+        return await call_next(request)
 
     client = request.headers.get("X-Client-Id", "anonymous")
-
     now = time.time()
 
     clients[client] = [
@@ -82,10 +85,7 @@ async def rate_limiter(request: Request, call_next):
 
     clients[client].append(now)
 
-    response = await call_next(request)
-
-    return response
-
+    return await call_next(request)
 
 # -----------------------------
 # Endpoint
